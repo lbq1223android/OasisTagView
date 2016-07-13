@@ -16,56 +16,59 @@ import android.widget.Toast;
 /**
  * Created by liling on 2016/7/13.
  */
-public class MoveTextView extends TextView {
-
+public class MoveTextView extends TextView{
     int lastX, lastY;
-    int downX, downY;
-    String tag = "MoveTextView";
-    int screenWidth, screenHeight;
-    long downTime;
-    boolean left;
-    static final int LongClickMessage = 99;
-    private android.os.Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == LongClickMessage) {
-                Log.e(tag, "LongClick");
+    int downX ,downY ;
+    String tag = "MoveTextView" ;
+    int screenWidth ,screenHeight ;
+    long downTime ;
+    boolean left ;
+    static final int LongClickMessage = 99 ;
+   private android.os.Handler  handler = new Handler(){
+       @Override
+       public void handleMessage(Message msg) {
+           super.handleMessage(msg);
+            if(msg.what==LongClickMessage){
+                Log.e(tag,"LongClick") ;
+                Toast.makeText(getContext(),"长按",Toast.LENGTH_LONG).show();
             }
-        }
-    };
+       }
+   } ;
 
     public MoveTextView(Context context) {
-        this(context, null);
+        this(context,null);
     }
 
     public MoveTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        this(context, attrs,0);
     }
 
     public MoveTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels - 50;
         this.setBackgroundResource(R.drawable.icon_tag_left);
-        left = true;
+        left = true ;
     }
 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
-        switch (action) {
+        switch(action) {
             case MotionEvent.ACTION_DOWN:
 
-                downTime = System.currentTimeMillis();
-                Message message = handler.obtainMessage();
-                message.what = LongClickMessage;
-                handler.sendMessageDelayed(message, 1500);
+                downTime = System.currentTimeMillis() ;
+                Message message = handler.obtainMessage() ;
+                message.what =LongClickMessage ;
+                handler.sendMessageDelayed(message,1500) ;
 
                 lastX = (int) event.getRawX();
                 lastY = (int) event.getRawY();
 
-                downX = lastX;
-                downY = lastY;
+                downX = lastX ;
+                downY = lastY ;
                 Log.d(tag, "action down");
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -76,16 +79,16 @@ public class MoveTextView extends TextView {
                 int ddx = (int) event.getRawX() - downX;
                 int ddy = (int) event.getRawY() - downY;
 
-                if (ddx < 5 && ddy < 5 && System.currentTimeMillis() - downTime < 1500) {
+                if(ddx<5&&ddy<5&&System.currentTimeMillis()-downTime<1500){
 
                     handler.removeMessages(LongClickMessage);
 
-                    Log.e(tag, "Click");
+                    Log.e(tag,"Click") ;
 
-                    left = !left;
-                    if (left) {
+                    left = !left ;
+                    if(left){
                         this.setBackgroundResource(R.drawable.icon_tag_left);
-                    } else {
+                    }else {
                         this.setBackgroundResource(R.drawable.icon_tag_right);
                     }
                 }
@@ -95,7 +98,7 @@ public class MoveTextView extends TextView {
                 int dddx = (int) event.getRawX() - downX;
                 int dddy = (int) event.getRawY() - downY;
 
-                if (dddx > 5 || dddy > 5) {
+                if(dddx>5||dddy>5){
                     handler.removeMessages(LongClickMessage);
                 }
 
@@ -138,11 +141,5 @@ public class MoveTextView extends TextView {
         return true;
     }
 
-    private void moveViewByLayout(View view, int rawX, int rawY) {
-        int left = rawX - this.getWidth() / 2;
-        int top = rawY - this.getHeight() / 2;
-        int width = left + view.getWidth();
-        int height = top + view.getHeight();
-        view.layout(left, top, width, height);
-    }
+
 }
